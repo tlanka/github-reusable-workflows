@@ -1,0 +1,90 @@
+# action.yml
+name: 'Custom Github Action to Update Deployment YAML files'
+description: 'Update helm values files with new image'
+
+on:
+  workflow_call:
+    inputs:
+      image_tag:
+        description: Image tag of the docker image
+        required: true
+        default: 'latest'
+      git_user:
+        description: username to access github repo
+        required: true
+      git_password:
+        description: Personal Access Token for k8s deployment files repo
+        required: true
+      app_name:
+        description: App name to be update
+        required: true
+      environment:
+        description: Environment to be update
+        required: true
+      DOCKER_USERNAME:
+        description: Docker user name
+        required: true
+      DOCKER_PASSWORD:
+        description: Docker password
+        required: true
+      jenkins_user:
+        description: Jenkins user
+        required: true
+      jenkins_password:
+        description: Jenkins password
+        required: true  
+    outputs:
+      status: # id of output
+        description: 'YAML update status'
+        
+jobs:
+  build-and-push-docker-image:
+    # run only when code is compiling and tests are passing
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.17.6]
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run list and prettier and elm-format
+        run: |
+          npm run lint
+          npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
+          npx elm-format src --validate
+      - name: Run Build
+        run: npm run build
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ inputs.DOCKER_USERNAME }}
+          password: ${{ inputs.DOCKER_PASSWORD }}
+
+      - name: Build image and push to DockerHub
+        id: docker_build_push
+        uses: docker/build-push-action@v2
+        with:
+      #     # relative path to the place where source code with Dockerfile is located
+          context: .
+          push: true
+      #     # Note: tags has to be all lower-case
+          tags: pics/ui:${{ inputs.image_tag }}
+
+
+      - name: Trigger your-awesome-job-name job
+        run: |
+          curl https://jenkins.avettatech.com/job/${{ inputs.environment }}-deploy-generic/buildWithParameters \
+             --user avettajenkins:${{ inputs.jenkins_password }} \
+             --data ContainerName=${{ inputs.app_name }} --data DockerHubTag=${{ inputs.image_tag }}
