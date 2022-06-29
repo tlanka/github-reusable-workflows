@@ -1,6 +1,5 @@
 # action.yml
 name: 'Custom Github Action to Update Deployment YAML files'
-description: 'Update helm values files with new image'
 
 on:
   workflow_call:
