@@ -60,32 +60,32 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-     # - name: Install Dependencies
-        #run: npm install
+      - name: Install Dependencies
+        run: npm install
 
       - name: Run list and prettier and elm-format
         run: |
-    #      npm run lint
-    #      npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
-    #      npx elm-format src --validate
-    #  - name: Run Build
-    #    run: npm run build
+          npm run lint
+          npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
+          npx elm-format src --validate
+      - name: Run Build
+        run: npm run build
 
-    #  - name: Login to DockerHub
-    #    uses: docker/login-action@v1
-    #    with:
-    #      username: ${inputs.DOCKER_USERNAME}
-    #      password: ${inputs.DOCKER_PASSWORD}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${inputs.DOCKER_USERNAME}
+          password: ${inputs.DOCKER_PASSWORD}
 
-    #  - name: Build image and push to DockerHub
-    #    id: docker_build_push
-    #    uses: docker/build-push-action@v2
-    #    with:
-      #     # relative path to the place where source code with Dockerfile is located
-    #      context: .
-    #      push: true
-      #     # Note: tags has to be all lower-case
-    #      tags: pics/ui:${inputs.image_tag}
+      - name: Build image and push to DockerHub
+        id: docker_build_push
+        uses: docker/build-push-action@v2
+        with:
+           # relative path to the place where source code with Dockerfile is located
+          context: .
+          push: true
+           # Note: tags has to be all lower-case
+          tags: pics/ui:${inputs.image_tag}
 
 
       - name: Trigger your-awesome-job-name job
