@@ -1,35 +1,38 @@
 # action.yml
 name: 'Custom Github Action to Update Deployment YAML files'
 description: 'Update helm values files with new image'
-inputs:
-  image_tag:
-    description: Image tag of the docker image
-    required: true
-    default: 'latest'
-  git_user:
-    description: username to access github repo
-    required: true
-  git_password:
-    description: Personal Access Token for k8s deployment files repo
-    required: true
-  app_name:
-    description: App name to be update
-    required: true
-  environment:
-    description: Environment to be update
-    required: true
-  DOCKER_USERNAME:
-    description: Docker user name
-    required: true
-  DOCKER_PASSWORD:
-    description: Docker password
-    required: true
-  jenkins_user:
-    description: Jenkins user
-    required: true
-  jenkins_password:
-    description: Jenkins password
-    required: true  
-outputs:
-  status: # id of output
-    description: 'YAML update status'
+
+on:
+  workflow_call:
+    inputs:
+      image_tag:
+        description: Image tag of the docker image
+        required: true
+        default: 'latest'
+      git_user:
+        description: username to access github repo
+        required: true
+      git_password:
+        description: Personal Access Token for k8s deployment files repo
+        required: true
+      app_name:
+        description: App name to be update
+        required: true
+      environment:
+        description: Environment to be update
+        required: true
+      DOCKER_USERNAME:
+        description: Docker user name
+        required: true
+      DOCKER_PASSWORD:
+        description: Docker password
+        required: true
+      jenkins_user:
+        description: Jenkins user
+        required: true
+      jenkins_password:
+        description: Jenkins password
+        required: true  
+    outputs:
+      status: # id of output
+        description: 'YAML update status'
