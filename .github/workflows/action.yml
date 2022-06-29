@@ -8,31 +8,40 @@ on:
       image_tag:
         description: Image tag of the docker image
         required: true
+        type: string
         default: 'latest'
       git_user:
         description: username to access github repo
         required: true
+        type: string
       git_password:
         description: Personal Access Token for k8s deployment files repo
         required: true
+        type: string
       app_name:
         description: App name to be update
         required: true
+        type: string
       environment:
         description: Environment to be update
         required: true
+        type: string
       DOCKER_USERNAME:
         description: Docker user name
         required: true
+        type: string
       DOCKER_PASSWORD:
         description: Docker password
         required: true
+        type: string
       jenkins_user:
         description: Jenkins user
         required: true
+        type: string
       jenkins_password:
         description: Jenkins password
-        required: true  
+        required: true
+        type: string
     outputs:
       status: # id of output
         description: 'YAML update status'
