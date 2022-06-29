@@ -42,9 +42,6 @@ on:
         description: Jenkins password
         required: true
         type: string
-    outputs:
-      status: # id of output
-        description: 'YAML update status'
         
 jobs:
   build-and-push-docker-image:
