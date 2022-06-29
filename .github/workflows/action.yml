@@ -60,14 +60,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install Dependencies
-        run: npm install
+     # - name: Install Dependencies
+        #run: npm install
 
       - name: Run list and prettier and elm-format
         run: |
-          npm run lint
-          npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
-          npx elm-format src --validate
+    #      npm run lint
+    #      npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
+    #      npx elm-format src --validate
     #  - name: Run Build
     #    run: npm run build
 
