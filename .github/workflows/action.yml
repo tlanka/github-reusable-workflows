@@ -60,22 +60,22 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install Dependencies
-        run: npm install
+     # - name: Install Dependencies
+       # run: npm install
 
       - name: Run list and prettier and elm-format
         run: |
           npm run lint
           npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
           npx elm-format src --validate
-      - name: Run Build
-        run: npm run build
+     # - name: Run Build
+      #  run: npm run build
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
-          username: ${secrets.DOCKER_USERNAME}
-          password: ${secrets.DOCKER_PASSWORD}
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}
 
       - name: Build image and push to DockerHub
         id: docker_build_push
