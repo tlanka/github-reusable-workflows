@@ -13,10 +13,6 @@ on:
         description: username to access github repo
         required: true
         type: string
-      git_password:
-        description: Personal Access Token for k8s deployment files repo
-        required: true
-        type: string
       app_name:
         description: App name to be update
         required: true
@@ -25,22 +21,20 @@ on:
         description: Environment to be update
         required: true
         type: string
-      DOCKER_USERNAME:
-        description: Docker user name
-        required: true
-        type: string
-      DOCKER_PASSWORD:
-        description: Docker password
-        required: true
-        type: string
       jenkins_user:
         description: Jenkins user
         required: true
         type: string
-      jenkins_password:
-        description: Jenkins password
+        
+    secrets:
+      git_password:
         required: true
-        type: string
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+      jenkins_password:
+        required: true  
         
 jobs:
   build-and-push-docker-image:
