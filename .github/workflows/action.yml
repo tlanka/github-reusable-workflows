@@ -79,7 +79,7 @@ jobs:
           context: .
           push: true
            # Note: tags has to be all lower-case
-          tags: pics/ui:${inputs.image_tag}
+          tags: pics/ui:${{inputs.image_tag}}
 
 
       - name: Trigger your-awesome-job-name job
