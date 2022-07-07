@@ -65,6 +65,7 @@ jobs:
         
       - name: Run list and prettier and elm-format
         run: |
+          - pwd
           - npm install
           - npm run coverage
           - npm prune --production   
