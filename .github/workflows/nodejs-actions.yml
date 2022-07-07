@@ -72,10 +72,11 @@ jobs:
            # Note: tags has to be all lower-case
           tags: pics/ui:${{inputs.image_tag}}
 
-
+      - name: Install Dependencies
+        run: npm install
+        
       - name: Run list and prettier and elm-format
         run: |
-          - npm install
           - npm run coverage
           - npm prune --production   
 
