@@ -75,8 +75,8 @@ jobs:
           sbt ++${{ matrix.scala }} clean coverage compile test
           sbt ++${{ matrix.scala }} coverageReport
           sbt docker:stage
-          docker build -t pics/recalcservice ./target/docker/stage
-          docker images
+          #docker build -t pics/recalcservice ./target/docker/stage
+          #docker images
           
      # - name: Report coverage to Codacy
       #  uses: codacy/codacy-coverage-reporter-action@0.2.1
@@ -94,10 +94,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
            # relative path to the place where source code with Dockerfile is located
-          context: .
+          context: ./target/docker/stage
           push: true
            # Note: tags has to be all lower-case
-          tags: pics/ui:${{inputs.image_tag}}
+          tags: pics/${{inputs.app_name}}:${{inputs.image_tag}}
 
 
       - name: Trigger your-awesome-job-name job
