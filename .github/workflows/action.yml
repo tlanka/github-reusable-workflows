@@ -89,7 +89,7 @@ jobs:
                   projectName: ${{inputs.app_name}} 
                   versionPrefix: You version prefix
                   url: https://blackduck.avettatech.com/
-                  sourcePath: /code
+                  sourcePath: .
                   extraArgs: --detect.yarn.prod.only=true
       - name: Trigger your-awesome-job-name job
         run: |
