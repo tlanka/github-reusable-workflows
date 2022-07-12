@@ -78,10 +78,10 @@ jobs:
           docker build -t pics/recalcservice ./target/docker/stage
           docker images
           
-      - name: Report coverage to Codacy
-        uses: codacy/codacy-coverage-reporter-action@0.2.1
-        with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+     # - name: Report coverage to Codacy
+      #  uses: codacy/codacy-coverage-reporter-action@0.2.1
+       # with:
+        #  project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
