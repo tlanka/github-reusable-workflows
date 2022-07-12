@@ -81,7 +81,16 @@ jobs:
            # Note: tags has to be all lower-case
           tags: pics/ui:${{inputs.image_tag}}
 
-
+      - name: BlackDuck
+        if: github.ref == 'refs/heads/gh_jenkins_integration'
+        uses: philips-labs/blackduck-scanner-action@v1
+        with:
+                  token: ${{ secrets.BLACKDUCK_TOKEN }}
+                  projectName: ${{inputs.app_name}} 
+                  versionPrefix: You version prefix
+                  url: https://blackduck.avettatech.com/
+                  sourcePath: /code
+                  extraArgs: --detect.yarn.prod.only=true
       - name: Trigger your-awesome-job-name job
         run: |
           curl https://jenkins.avettatech.com/job/${{inputs.environment}}-deploy-generic/buildWithParameters \
