@@ -54,16 +54,16 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install Dependencies
-        run: npm install
+     # - name: Install Dependencies
+      #  run: npm install
 
-      - name: Run list and prettier and elm-format
-        run: |
-          npm run lint
-          npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
-          npx elm-format src --validate
-      - name: Run Build
-        run: npm run build
+      #- name: Run list and prettier and elm-format
+       # run: |
+          #npm run lint
+          #npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
+          #npx elm-format src --validate
+      #- name: Run Build
+       # run: npm run build
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -71,26 +71,22 @@ jobs:
           username: ${{secrets.DOCKER_USERNAME}}
           password: ${{secrets.DOCKER_PASSWORD}}
 
-      - name: Build image and push to DockerHub
-        id: docker_build_push
-        uses: docker/build-push-action@v2
-        with:
+      #- name: Build image and push to DockerHub
+       # id: docker_build_push
+        #uses: docker/build-push-action@v2
+        #with:
            # relative path to the place where source code with Dockerfile is located
-          context: .
-          push: true
+         # context: .
+          #push: true
            # Note: tags has to be all lower-case
-          tags: pics/ui:${{inputs.image_tag}}
+          #tags: pics/ui:${{inputs.image_tag}}
 
       - name: BlackDuck
         if: github.ref == 'refs/heads/gh_jenkins_integration'
-        uses: philips-labs/blackduck-scanner-action@v1
+        uses: blackducksoftware/github-action@2.0.0
         with:
-                  token: ${{secrets.BLACKDUCK_TOKEN}}
-                  projectName: ${{inputs.app_name}} 
-                  versionPrefix: test
-                  url: https://blackduck.avettatech.com/
-                  sourcePath: .
-                  extraArgs: --detect.yarn.prod.only=true
+          args: --blackduck.url="https://blackduck.avettatech.com/" --blackduck.api.token="${{secrets.BLACKDUCK_TOKEN}}"
+
       - name: Trigger your-awesome-job-name job
         run: |
           curl https://jenkins.avettatech.com/job/${{inputs.environment}}-deploy-generic/buildWithParameters \
