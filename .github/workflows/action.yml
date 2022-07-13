@@ -88,9 +88,9 @@ jobs:
         uses: synopsys-sig/detect-action@v0.3.0
         with:
             scan-mode: RAPID # Can be omitted, since this is the default value
-            github-token: ${{ secrets.GITHUB_TOKEN }}
+            github-token: ${{secrets.GH_TOKEN}}
             detect-version: 7.9.0
-            blackduck-url: https://blackduck.avettatech.com
+            blackduck-url: ${{secrets.BLACKDUCK_URL}}
             blackduck-api-token: ${{secrets.BLACKDUCK_TOKEN}}    
 
       - name: Trigger your-awesome-job-name job
