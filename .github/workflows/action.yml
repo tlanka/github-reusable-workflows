@@ -81,11 +81,17 @@ jobs:
            # Note: tags has to be all lower-case
           #tags: pics/ui:${{inputs.image_tag}}
 
-      - name: BlackDuck
+      
+          
+      - name: Run Synopsys Detect
         if: github.ref == 'refs/heads/gh_jenkins_integration'
-        uses: blackducksoftware/github-action@2.0.0
+        uses: synopsys-sig/detect-action@v0.3.0
         with:
-          args: --blackduck.url="https://blackduck.avettatech.com/" --blackduck.api.token="${{secrets.BLACKDUCK_TOKEN}}"
+            scan-mode: RAPID # Can be omitted, since this is the default value
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+            detect-version: 7.9.0
+            blackduck-url: https://blackduck.avettatech.com
+            blackduck-api-token: ${{secrets.BLACKDUCK_TOKEN}}    
 
       - name: Trigger your-awesome-job-name job
         run: |
