@@ -87,7 +87,7 @@ jobs:
         with:
                   token: ${{ secrets.BLACKDUCK_TOKEN }}
                   projectName: ${{inputs.app_name}} 
-                  versionPrefix: You version prefix
+                  versionPrefix: test
                   url: https://blackduck.avettatech.com/
                   sourcePath: .
                   extraArgs: --detect.yarn.prod.only=true
