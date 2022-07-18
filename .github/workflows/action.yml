@@ -84,7 +84,19 @@ jobs:
           password: ${{secrets.DOCKER_PASSWORD}}
       - name: Run list and prettier and elm-format
         run: |
-          echo "tag=${{inputs.DOCKER_TAG}}" | sudo tee -a $propertiesFile
+          # Check if $propertiesFile file exists. If not, create file
+            export propertiesFile="./conf/serviceVersion.properties"
+            if [ -f $propertiesFile ];
+            then
+              echo "File $propertiesFile exists."
+            else
+              echo "File $propertiesFile does not exist. Creating conf directory"
+              mkdir ./conf
+            fi
+
+            # Update $propertiesFile
+            echo "Writing commit ID and build # to conf files."
+            echo "tag=${{inputs.DOCKER_TAG}}" | sudo tee -a $propertiesFile
             echo "commit=${{inputs.GITHUB_COMMIT}}" | sudo tee -a $propertiesFile
             echo "buildId=${{inputs.GITHUB_BUILD_NUMBER}}" | sudo tee -a $propertiesFile
 
