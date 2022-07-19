@@ -70,7 +70,7 @@ jobs:
 
       - name: Run list and prettier and elm-format
         run: |
-          npm install
+          #npm install
           npm run lint
           npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
           npx elm-format src --validate
