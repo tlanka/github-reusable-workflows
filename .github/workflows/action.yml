@@ -84,7 +84,7 @@ jobs:
             
       - name: Install Dependencies
         if: steps.cache-nodemodules.outputs.cache-hit != 'true'
-        run: npm ci      
+        run: npm install   
 
       - name: Run list and prettier and elm-format
         run: |
