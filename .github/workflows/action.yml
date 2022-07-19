@@ -70,8 +70,7 @@ jobs:
          # path: node_modules
           #key: node-modules-${{ hashFiles('package-lock.json') }}   
             
-      - name: Install Dependencies
-        #if: steps.cache.outputs.cache-hit != 'true'
+      - name: Install npm
         run: npm install
 
       - name: Run list and prettier and elm-format
@@ -147,13 +146,13 @@ jobs:
              #--data ContainerName=${{inputs.app_name}} --data DockerHubTag=${{inputs.image_tag}}
           #fi
           
-      - name: Trigger jenkins job
-        uses: GoldenspearLLC/build-jenkins-job@master
-        with:
-            jenkins-url: https://jenkins.avettatech.com
-            jenkins-token: ${{ secrets.jenkins_password }}
-            user: "avettajenkins"
-            job-path: "job/${{inputs.environment}}-deploy-generic"
-            job-params: "{'ContainerName': '${{inputs.app_name}}', 'DockerHubTag': '${{inputs.image_tag}}'}"
-      - name: Get job status
-        run: echo "Job status is ${{ steps.job-build.outputs.job_status }}"
+      #- name: Trigger jenkins job
+       # uses: GoldenspearLLC/build-jenkins-job@master
+        #with:
+         #   jenkins-url: https://jenkins.avettatech.com
+          #  jenkins-token: ${{ secrets.jenkins_password }}
+           # user: "avettajenkins"
+            #job-path: "job/${{inputs.environment}}-deploy-generic"
+            #job-params: "{'ContainerName': '${{inputs.app_name}}', 'DockerHubTag': '${{inputs.image_tag}}'}"
+      #- name: Get job status
+       # run: echo "Job status is ${{ steps.job-build.outputs.job_status }}"
