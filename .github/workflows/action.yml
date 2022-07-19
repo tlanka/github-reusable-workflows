@@ -66,17 +66,18 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install Dependencies
-        run: npm install
+      #- name: Install Dependencies
+        #run: npm install
           
-     # - name: Cache Node Modules
-      #  id: cache-node-modules
-       # uses: actions/cache@v2
-        #with:
-         # path: node_modules
-          #key: node-modules-${{ hashFiles('package-lock.json') }}   
-            
-      - name: Install npm
+      - name: Cache Node Modules
+        id: cache-node-modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+          
+      - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: npm install
 
       - name: Run list and prettier and elm-format
