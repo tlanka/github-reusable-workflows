@@ -66,9 +66,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-
-      - name: Install Dependencies
-        run: npm install
+          run: npm ci
 
       - name: Run list and prettier and elm-format
         run: |
