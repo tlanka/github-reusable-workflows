@@ -72,7 +72,7 @@ jobs:
             
       - name: Install Dependencies
         #if: steps.cache.outputs.cache-hit != 'true'
-        run: npm install   
+        run: npm install -g
 
       - name: Run list and prettier and elm-format
         run: |
