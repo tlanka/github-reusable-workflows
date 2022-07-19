@@ -66,19 +66,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-          run: |
-            npm run lint
-            npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
-            npx elm-format src --validate
-            npm run build
 
-     # - name: Run list and prettier and elm-format
-      #  run: |
-       #   npm run lint
-        #  npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
-         # npx elm-format src --validate
-      #- name: Run Build
-       # run: npm run build
+      - name: Run list and prettier and elm-format
+        run: |
+          npm install
+          npm run lint
+          npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
+          npx elm-format src --validate
+      - name: Run Build
+        run: npm run build
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
