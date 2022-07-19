@@ -51,7 +51,7 @@ on:
 jobs:
   build-and-push-docker-image:
     # run only when code is compiling and tests are passing
-    runs-on: alpine-3.14
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         node-version: [14.17.6]
