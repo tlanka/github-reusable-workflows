@@ -148,12 +148,12 @@ jobs:
           #fi
           
       - name: Trigger jenkins job
-        uses: jabbukka/jenkins-trigger@main
+        uses: GoldenspearLLC/build-jenkins-job@master
         with:
-          url: https://jenkins.avettatech.com
-          job_name: "${{inputs.environment}}-deploy-generic"
-          user_name: avettajenkins
-          api_token: ${{secrets.jenkins_password}}
-          parameter: ${"ContainerName":"${{inputs.app_name}}","DockerHubTag":"${{inputs.image_tag}}"}
-          wait: "true"
-          timeout: "1000"
+            jenkins-url: https://jenkins.avettatech.com
+            jenkins-token: ${{ secrets.jenkins_password }}
+            user: "avettajenkins"
+            job-path: "job/${{inputs.environment}}-deploy-generic"
+            job-params: "{'ContainerName': '${{inputs.app_name}}', 'DockerHubTag': '${{inputs.image_tag}}'}"
+      - name: Get job status
+        run: echo "Job status is ${{ steps.job-build.outputs.job_status }}"
