@@ -63,20 +63,19 @@ jobs:
 
 
           
-      - name: Cache Node Modules
-        id: cache-node-modules
-        uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: node-modules-${{ hashFiles('package-lock.json') }}   
+     # - name: Cache Node Modules
+      #  id: cache-node-modules
+       # uses: actions/cache@v2
+        #with:
+         # path: node_modules
+          #key: node-modules-${{ hashFiles('package-lock.json') }}   
             
       - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
+        #if: steps.cache.outputs.cache-hit != 'true'
         run: npm install   
 
       - name: Run list and prettier and elm-format
         run: |
-          #npm install
           npm run lint
           npx prettier --check '{config,server,src/static}/**/*.{css,html,js,json,ts}'
           npx elm-format src --validate
@@ -138,12 +137,23 @@ jobs:
             #blackduck-url: ${{secrets.BLACKDUCK_URL}}
            # blackduck-api-token: ${{secrets.BLACKDUCK_TOKEN}}    
 
-      - name: Trigger your-awesome-job-name job
-        run: |             
-          if [[ ${{inputs.environment}} == 'frnk' ]]; then
-            echo "Deployment configuration not found for ${{inputs.environment}}"
-          else
-            curl https://jenkins.avettatech.com/job/${{inputs.environment}}-deploy-generic/buildWithParameters \
-             --user avettajenkins:${{secrets.jenkins_password}} \
-             --data ContainerName=${{inputs.app_name}} --data DockerHubTag=${{inputs.image_tag}}
-          fi   
+      #- name: Trigger your-awesome-job-name job
+       # run: |             
+        #  if [[ ${{inputs.environment}} == 'frnk' ]]; then
+         #   echo "Deployment configuration not found for ${{inputs.environment}}"
+          #else
+           # curl https://jenkins.avettatech.com/job/${{inputs.environment}}-deploy-generic/buildWithParameters \
+            # --user avettajenkins:${{secrets.jenkins_password}} \
+             #--data ContainerName=${{inputs.app_name}} --data DockerHubTag=${{inputs.image_tag}}
+          #fi
+          
+      - name: Trigger jenkins job
+        uses: jabbukka/jenkins-trigger@main
+        with:
+          url: https://jenkins.avettatech.com
+          job_name: "${{inputs.environment}}-deploy-generic"
+          user_name: avettajenkins
+          api_token: ${{secrets.jenkins_password}}
+          parameter: ${"ContainerName":"${{inputs.app_name}}","DockerHubTag":"${{inputs.image_tag}}"}
+          wait: "true"
+          timeout: "1000"
