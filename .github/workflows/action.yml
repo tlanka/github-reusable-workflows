@@ -146,7 +146,9 @@ jobs:
 
       - name: Trigger your-awesome-job-name job
         run: |             
-          if [[ ${{inputs.environment}} == 'frnk' ]]; then
+          if [ -z "${{inputs.environment}}" ]; then
+            echo "Deployment configuration not found"
+          elif [[ ${{inputs.environment}} == 'frnk' ]]; then
             echo "Deployment configuration not found for ${{inputs.environment}}"
           else
             curl https://jenkins.avettatech.com/job/${{inputs.environment}}-deploy-generic/buildWithParameters \
