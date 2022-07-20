@@ -149,8 +149,6 @@ jobs:
           environment=${{inputs.environment}}
           if [ -z $environment ]; then
             echo "Deployment configuration not found"
-          elif [[ ${{inputs.environment}} == 'frnk' ]]; then
-            echo "Deployment configuration not found for ${{inputs.environment}}"
           else
             curl https://jenkins.avettatech.com/job/${{inputs.environment}}-deploy-generic/buildWithParameters \
              --user avettajenkins:${{secrets.jenkins_password}} \
