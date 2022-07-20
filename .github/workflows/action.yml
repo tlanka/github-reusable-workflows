@@ -146,7 +146,8 @@ jobs:
 
       - name: Trigger your-awesome-job-name job
         run: |  
-          if [ -z ${{inputs.environment}} ]; then
+          environment=${{inputs.environment}}
+          if [ -z $environment ]; then
             echo "Deployment configuration not found"
           elif [[ ${{inputs.environment}} == 'frnk' ]]; then
             echo "Deployment configuration not found for ${{inputs.environment}}"
