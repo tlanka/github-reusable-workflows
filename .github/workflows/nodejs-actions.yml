@@ -25,6 +25,18 @@ on:
         description: Jenkins user
         required: true
         type: string
+      DOCKER_TAG:
+        description: Jenkins user
+        required: true
+        type: string
+      GITHUB_COMMIT:
+        description: Jenkins user
+        required: true
+        type: string
+      GITHUB_BUILD_NUMBER:
+        description: Jenkins user
+        required: true
+        type: string
         
     secrets:
       git_password:
@@ -51,6 +63,31 @@ jobs:
         with:
           username: ${{secrets.DOCKER_USERNAME}}
           password: ${{secrets.DOCKER_PASSWORD}}
+          
+      - name: set version files
+        run: |
+          # Check if $propertiesFile file exists. If not, create file
+            export propertiesFile="./conf/serviceVersion.properties"
+            if [ -f $propertiesFile ];
+            then
+              echo "File $propertiesFile exists."
+            else
+              echo "File $propertiesFile does not exist. Creating conf directory"
+              mkdir ./conf
+            fi
+            # Update $propertiesFile
+            echo "Writing commit ID and build # to conf files."
+            echo "tag=${{inputs.DOCKER_TAG}}" | sudo tee -a $propertiesFile
+            echo "commit=${{inputs.GITHUB_COMMIT}}" | sudo tee -a $propertiesFile
+            echo "buildId=${{inputs.GITHUB_BUILD_NUMBER}}" | sudo tee -a $propertiesFile
+            echo "Writing commit ID and build # to version.json file"
+            echo \{\"buildId\":\"${{inputs.GITHUB_BUILD_NUMBER}}\",\"commit\":\"${{inputs.GITHUB_COMMIT}}\",\"tag\":\"${{inputs.DOCKER_TAG}}\"\} > ./version.json
+            # Copy in file to conf directory for Play builds
+            cp ./version.json ./conf/version.json
+            # Output for verification purposes
+            echo "Checking parameter values in $propertiesFile"
+            echo "Parameters in $propertiesFile"
+            cat $propertiesFile     
 
       - name: Build image and push to DockerHub
         id: docker_build_push
