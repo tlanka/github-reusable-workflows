@@ -82,8 +82,8 @@ jobs:
 
       - name: Check that workflows are up to date 
         run: |
-          export JFROG_USER=${{ secrets.JFROG_USERNAME }}
-          export JFROG_PASSWORD=${{ secrets.JFROG_PASSWORD }}
+          export JFROG_USER=${{secrets.JFROG_USERNAME}}
+          export JFROG_PASSWORD=${{secrets.JFROG_PASSWORD}}
           sbt ++${{ matrix.scala }} clean coverage compile test
           sbt ++${{ matrix.scala }} coverageReport
           sbt docker:stage
