@@ -46,6 +46,10 @@ on:
       DOCKER_PASSWORD:
         required: true
       jenkins_password:
+        required: true
+      JFROG_USERNAME:
+        required: true
+      JFROG_PASSWORD:
         required: true  
         
 jobs:
@@ -84,8 +88,8 @@ jobs:
         run: |
           export JFROG_USER=${{secrets.JFROG_USERNAME}}
           export JFROG_PASSWORD=${{secrets.JFROG_PASSWORD}}
-          #sbt ++${{ matrix.scala }} clean coverage compile test
-          #sbt ++${{ matrix.scala }} coverageReport
+          sbt ++${{ matrix.scala }} clean coverage compile test
+          sbt ++${{ matrix.scala }} coverageReport
           sbt docker:stage
           #docker build -t pics/recalcservice ./target/docker/stage
           #docker images
