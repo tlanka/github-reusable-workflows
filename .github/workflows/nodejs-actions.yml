@@ -108,7 +108,12 @@ jobs:
 
 
       - name: Trigger your-awesome-job-name job
-        run: |
-          curl https://jenkins.avettatech.com/job/${{inputs.environment}}-deploy-generic/buildWithParameters \
+        run: |  
+          environment=${{inputs.environment}}
+          if [ -z $environment ]; then
+            echo "Deployment configuration not found"
+          else
+            curl https://jenkins.avettatech.com/job/${{inputs.environment}}-deploy-generic/buildWithParameters \
              --user avettajenkins:${{secrets.jenkins_password}} \
              --data ContainerName=${{inputs.app_name}} --data DockerHubTag=${{inputs.image_tag}}
+          fi
