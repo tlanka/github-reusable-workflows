@@ -1,0 +1,151 @@
+# action.yml
+name: 'Custom Github Action to Update Deployment YAML files'
+
+on:
+  workflow_call:
+    inputs:
+      image_tag:
+        description: Image tag of the docker image
+        required: true
+        type: string
+        default: 'latest'
+      git_user:
+        description: username to access github repo
+        required: true
+        type: string
+      app_name:
+        description: App name to be update
+        required: true
+        type: string
+      environment:
+        description: Environment to be update
+        required: true
+        type: string
+      jenkins_user:
+        description: Jenkins user
+        required: true
+        type: string
+      DOCKER_TAG:
+        description: Jenkins user
+        required: true
+        type: string
+      GITHUB_COMMIT:
+        description: Jenkins user
+        required: true
+        type: string
+      GITHUB_BUILD_NUMBER:
+        description: Jenkins user
+        required: true
+        type: string 
+        
+    secrets:
+      git_password:
+        required: true
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+      jenkins_password:
+        required: true
+      JFROG_USERNAME:
+        required: true
+      JFROG_PASSWORD:
+        required: true  
+        
+jobs:
+  build:
+    name: Build and Test
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        scala: [2.13.1]
+        jdk: [openjdk8]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout current branch (full)
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java and Scala
+        uses: olafurpg/setup-scala@v10
+        with:
+          java-version: ${{ matrix.jdk }}
+
+      - name: Cache sbt
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.sbt
+            ~/.ivy2/cache
+            ~/.coursier/cache/v1
+            ~/.cache/coursier/v1
+            ~/AppData/Local/Coursier/Cache/v1
+            ~/Library/Caches/Coursier/v1
+          key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
+
+      - name: Check that workflows are up to date 
+        run: |
+          export JFROG_USER=${{secrets.JFROG_USERNAME}}
+          export JFROG_PASSWORD=${{secrets.JFROG_PASSWORD}}
+          sbt ++${{ matrix.scala }} clean coverage compile test
+          sbt ++${{ matrix.scala }} coverageReport
+          sbt docker:stage -J-Xmx4G
+          #docker build -t pics/recalcservice ./target/docker/stage
+          #docker images
+          
+     # - name: Report coverage to Codacy
+      #  uses: codacy/codacy-coverage-reporter-action@0.2.1
+       # with:
+        #  project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWORD}}
+      - name: set version files
+        run: |
+          # Check if $propertiesFile file exists. If not, create file
+            export propertiesFile="./conf/serviceVersion.properties"
+            if [ -f $propertiesFile ];
+            then
+              echo "File $propertiesFile exists."
+            else
+              echo "File $propertiesFile does not exist. Creating conf directory"
+              mkdir ./conf
+            fi
+            # Update $propertiesFile
+            echo "Writing commit ID and build # to conf files."
+            echo "tag=${{inputs.DOCKER_TAG}}" | sudo tee -a $propertiesFile
+            echo "commit=${{inputs.GITHUB_COMMIT}}" | sudo tee -a $propertiesFile
+            echo "buildId=${{inputs.GITHUB_BUILD_NUMBER}}" | sudo tee -a $propertiesFile
+            echo "Writing commit ID and build # to version.json file"
+            echo \{\"buildId\":\"${{inputs.GITHUB_BUILD_NUMBER}}\",\"commit\":\"${{inputs.GITHUB_COMMIT}}\",\"tag\":\"${{inputs.DOCKER_TAG}}\"\} > ./version.json
+            # Copy in file to conf directory for Play builds
+            cp ./version.json ./conf/version.json
+            # Output for verification purposes
+            echo "Checking parameter values in $propertiesFile"
+            echo "Parameters in $propertiesFile"
+            cat $propertiesFile    
+      - name: Build image and push to DockerHub
+        id: docker_build_push
+        uses: docker/build-push-action@v2
+        with:
+           # relative path to the place where source code with Dockerfile is located
+          context: ./target/docker/stage
+          push: true
+           # Note: tags has to be all lower-case
+          tags: pics/${{inputs.app_name}}:${{inputs.image_tag}}
+
+
+      - name: Trigger your-awesome-job-name job
+        run: |  
+          environment=${{inputs.environment}}
+          if [ -z $environment ]; then
+            echo "Deployment configuration not found"
+          else
+            curl https://jenkins.avettatech.com/job/${{inputs.environment}}-deploy-generic/buildWithParameters \
+             --user avettajenkins:${{secrets.jenkins_password}} \
+             --data ContainerName=${{inputs.app_name}} --data DockerHubTag=${{inputs.image_tag}}
+          fi
