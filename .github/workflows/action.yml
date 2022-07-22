@@ -145,6 +145,7 @@ jobs:
            # blackduck-api-token: ${{secrets.BLACKDUCK_TOKEN}}    
 
       - name: Trigger your-awesome-job-name job
+        if: github.event_name != 'pull_request'
         run: |  
           environment=${{inputs.environment}}
           if [ -z $environment ]; then
