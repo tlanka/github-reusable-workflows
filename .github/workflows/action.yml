@@ -45,6 +45,8 @@ on:
         required: true
       DOCKER_PASSWORD:
         required: true
+      jenkins_url:
+        required: true 
       jenkins_password:
         required: true  
         
@@ -152,7 +154,7 @@ jobs:
           if [ -z $environment ]; then
             echo "Deployment configuration not found"
           else
-            curl https://jenkins.avettatech.com/job/${{inputs.environment}}-deploy-generic/buildWithParameters \
+            curl ${{secrets.jenkins_url}}/job/${{inputs.environment}}-deploy-generic/buildWithParameters \
              --user ${{inputs.jenkins_user}}:${{secrets.jenkins_password}} \
              --data ContainerName=${{inputs.app_name}} --data DockerHubTag=${{inputs.image_tag}}
           fi
