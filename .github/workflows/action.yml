@@ -123,6 +123,7 @@ jobs:
           
 
       - name: Build image and push to DockerHub
+        if: github.event_name != 'pull_request'
         id: docker_build_push
         uses: docker/build-push-action@v2
         with:
