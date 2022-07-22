@@ -59,7 +59,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         scala: [2.13.1]
-        jdk: [openjdk8]
+        java: [adopt@1.8]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout current branch (full)
@@ -70,7 +70,7 @@ jobs:
       - name: Setup Java and Scala
         uses: olafurpg/setup-scala@v10
         with:
-          java-version: ${{ matrix.jdk }}
+          java-version: ${{ matrix.java }}
 
       - name: Cache sbt
         uses: actions/cache@v2
