@@ -88,8 +88,8 @@ jobs:
         run: |
           export JFROG_USER=${{secrets.JFROG_USERNAME}}
           export JFROG_PASSWORD=${{secrets.JFROG_PASSWORD}}
-          sbt ++${{ matrix.scala }} clean coverage compile test
-          sbt ++${{ matrix.scala }} coverageReport
+          #sbt ++${{ matrix.scala }} clean coverage compile test
+          #sbt ++${{ matrix.scala }} coverageReport
           sbt docker:stage -J-Xmx4G
           #docker build -t pics/recalcservice ./target/docker/stage
           #docker images
